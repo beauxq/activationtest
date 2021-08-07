@@ -35,7 +35,7 @@ def test(activation: Type[Layer.Activation]):
 def main():
     test_count = 100
 
-    for activation in (Layer.TruncatedSQRT, Layer.Swish, Layer.ReLU, Layer.Sigmoid, Layer.TanH):
+    for activation in (Layer.SQRT, Layer.TruncatedSQRT, Layer.Swish, Layer.ReLU, Layer.Sigmoid, Layer.TanH):
         print("testing", activation)
         total = 0
         times: List[float] = []
