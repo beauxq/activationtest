@@ -1,4 +1,5 @@
-from typing import Type, List
+from collections import defaultdict
+from typing import Type, Dict
 import numpy as np
 from time import perf_counter
 import sys
@@ -33,23 +34,35 @@ def test(activation: Type[Layer.Activation]):
     return end_error
 
 def main():
-    test_count = 100
+    sample_count = 100
 
-    for activation in (Layer.SQRT, Layer.TruncatedSQRT, Layer.Swish, Layer.ReLU, Layer.Sigmoid, Layer.TanH):
-        print("testing", activation)
-        total = 0
-        times: List[float] = []
-        for _ in range(test_count):
+    failCounts: Dict[Type[Layer.Activation], int] = defaultdict(int)
+    timeTotals: Dict[Type[Layer.Activation], float] = defaultdict(float)
+
+    activations = (
+        Layer.SQRT,
+        Layer.TruncatedSQRT,
+        Layer.Swish,
+        Layer.ReLU,
+        Layer.Sigmoid,
+        Layer.TanH
+    )
+
+    for i in range(sample_count):
+        if i % 10 == 0:
+            print("running sample", i)
+        for activation in activations:
             t0 = perf_counter()
             error = test(activation)
             t1 = perf_counter()
-            times.append(t1- t0)
+            timeTotals[activation] += (t1- t0)
             if error > 0.1:
-                print("failure with error:", error)
-                total += 1
-        print("result", activation)
-        print("fail rate:", total / test_count)
-        print("time:", sum(times) / test_count)
+                failCounts[activation] += 1
+    print(sample_count, "samples")
+    for activation in activations:
+        print("  result", activation)
+        print("    fail rate:", failCounts[activation] / sample_count)
+        print("    time:", timeTotals[activation] / sample_count)
 
 
 if __name__ == "__main__":
