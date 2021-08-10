@@ -36,8 +36,8 @@ def test(activation: Type[Layer.Activation]):
 def main():
     sample_count = 100
 
-    failCounts: Dict[Type[Layer.Activation], int] = defaultdict(int)
-    timeTotals: Dict[Type[Layer.Activation], float] = defaultdict(float)
+    fail_counts: Dict[Type[Layer.Activation], int] = defaultdict(int)
+    time_totals: Dict[Type[Layer.Activation], float] = defaultdict(float)
 
     activations = (
         Layer.SQRT,
@@ -55,14 +55,14 @@ def main():
             t0 = perf_counter()
             error = test(activation)
             t1 = perf_counter()
-            timeTotals[activation] += (t1- t0)
+            time_totals[activation] += (t1- t0)
             if error > 0.1:
-                failCounts[activation] += 1
+                fail_counts[activation] += 1
     print(sample_count, "samples")
     for activation in activations:
         print("  result", activation)
-        print("    fail rate:", failCounts[activation] / sample_count)
-        print("    time:", timeTotals[activation] / sample_count)
+        print("    fail rate:", fail_counts[activation] / sample_count)
+        print("    time:", time_totals[activation] / sample_count)
 
 
 if __name__ == "__main__":
