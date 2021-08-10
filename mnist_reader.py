@@ -1,18 +1,31 @@
+from typing import Optional
 import os
 import numpy as np
 
-def render_mnist_image(data: np.ndarray, high: float = 1.0) -> str:
+def render_mnist_image(data: np.ndarray, *, low: Optional[float] = None, high: Optional[float] = None) -> str:
     """ ascii art """
     width = 28
     height = 28
     colors = " -+@"  # ᐧ █
+    color_count = len(colors)
     assert len(data) == width * height
-    assert high > 0
+
+    if high is None:
+        high = float(np.max(data))  # `float` is because the type checker can't tell that np.max gives a float
+        if 223 < high < 255:
+            high = 255
+        elif 0.875 < high < 1.0:
+            high = 1.0
+    if low is None:
+        low = float(np.min(data))
+        if 0 < low < 0.125 * high:
+            low = 0
+    diff = (high - low) + 1e-307  # avoid divide by 0
 
     tr = ""
 
     for val in data:
-        color = min(int(val * len(colors) / high), len(colors) - 1)
+        color = min(int((val - low) * color_count / diff), color_count - 1)
         tr += colors[color]
         
         if len(tr) % (width + 1) == width:
@@ -37,7 +50,6 @@ def _get_image_data(filename: str) -> np.ndarray:
             return tr.reshape(length, row_count * col_count)
     except IOError as error:
         print("need mnist data in directory `mnist_data`")
-        print("")
         raise error
 
 _classification_labels = [
