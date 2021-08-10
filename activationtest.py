@@ -49,7 +49,7 @@ def main():
     )
 
     for i in range(sample_count):
-        if i % 10 == 0:
+        if sample_count < 6 or i % int(sample_count * 5 / 90 + 4.5) == 0:
             print("running sample", i)
         for activation in activations:
             t0 = perf_counter()

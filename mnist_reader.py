@@ -82,7 +82,6 @@ def _get_labels(filename: str, as_value: bool) -> np.ndarray:
             return np.array(tr)
     except IOError as error:
         print("need mnist data in directory `mnist_data`")
-        print("")
         raise error
 
 def get_data():
