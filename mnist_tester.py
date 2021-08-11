@@ -1,4 +1,4 @@
-from typing import Type, Dict, Tuple
+from typing import Type, Dict, Tuple, List
 from time import perf_counter
 from mnist_reader import get_data, render_mnist_image
 import sys
@@ -67,8 +67,8 @@ def main():
     
     sample_count = 20
 
-    accuracy_totals: Dict[Type[Layer.Activation], float] = defaultdict(float)
-    time_totals: Dict[Type[Layer.Activation], float] = defaultdict(float)
+    accuracies: Dict[Type[Layer.Activation], List[float]] = defaultdict(list)
+    times: Dict[Type[Layer.Activation], List[float]] = defaultdict(list)
 
     activations = (
         Layer.SQRT,
@@ -84,13 +84,17 @@ def main():
         for activation in activations:
             print("activation", activation)
             accuracy, training_time = test(activation)
-            time_totals[activation] += training_time
-            accuracy_totals[activation] += accuracy
+            times[activation].append(training_time)
+            accuracies[activation].append(accuracy)
     print(sample_count, "samples")
     for activation in activations:
         print("  result", activation)
-        print("    accuracy rate:", accuracy_totals[activation] / sample_count)
-        print("    time:", time_totals[activation] / sample_count)
+        print("    accuracy rate:", sum(accuracies[activation]) / sample_count)
+        print("    accuracies:")
+        print(accuracies[activation])
+        print("    average time:", sum(times[activation]) / sample_count)
+        print("    times:")
+        print(times[activation])
 
 if __name__ == "__main__":
     main()
