@@ -1,5 +1,7 @@
 testing and comparing activation functions in artificial neural networks
 
+use `git clone --recurse-submodules` to include neural network library
+
 requires numpy
 
 For a basic comparison training an xor function:
